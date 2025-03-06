@@ -7,13 +7,14 @@ main {
   width: 100%;
   min-height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 1rem;
   box-sizing: inherit;
   position: relative;
   background: var(--ssecondary-1);
   color: #100a09;
-  align-items: flex-start;
+  align-items: center;
+  flex-direction: column;
 }
 
 .content {
@@ -28,10 +29,11 @@ main {
 .fade-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   background: var(--pprimary-2);
   box-shadow: inset 0 -1px rgba(211, 208, 201, 0.25);
   padding: 0.75rem 1rem;
+  gap: 15px;
 }
 
 .fade-content a {
@@ -40,6 +42,20 @@ main {
   font-size: 20px;
   font-weight: 700;
   font-family: "Inter", sans-serif;
+  user-select: none;
+}
+
+.question-icon {
+  height: 30px;
+  border: 2px solid var(--primary-1);
+  background: var(--primary-1);
+  border-radius: 3px;
+  padding: 2px;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 
 .container-body {
@@ -253,4 +269,9 @@ main {
   background: var(--pprimary-2); /* Set the color of the thumb */
   border-radius: 50%; /* Make the thumb round */
   cursor: pointer; /* Change cursor to pointer */
+}
+
+.pairings-container {
+  width: 100%;
+  margin-top: 20px;
 }

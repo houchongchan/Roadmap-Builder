@@ -42,7 +42,7 @@ export class LadderInputComponent implements AfterViewInit {
   @Input() row: string = '';
   @Input() isButtonDisabled: boolean = false;
 
-  @Input() inputValue: string = '';
+  inputValue: string = '';
   @Output() inputValueChange = new EventEmitter<string>();
   @Input() brightColor: string;
   inputColor: string;
@@ -67,10 +67,7 @@ export class LadderInputComponent implements AfterViewInit {
     this.inputValueChange.emit(this.inputValue); // Emit the updated value
   }
 
-  getInputText(row) {
-    if (row == 'top') {
-      return 'Selcti';
-    }
-    return 'Selection';
+  get inputText() {
+    return this.inputValue;
   }
 }

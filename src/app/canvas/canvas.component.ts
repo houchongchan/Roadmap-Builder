@@ -23,9 +23,11 @@ import {
 export class CanvasComponent implements AfterViewInit, OnChanges {
   @ViewChild('myCanvas', { static: false })
   canvas: ElementRef<HTMLCanvasElement>;
-  @Input lines;
-  @Input brightColor;
+
+  @Input lines: number;
+  @Input brightColor: string;
   @Output() notify: EventEmitter<number> = new EventEmitter<number>(); // Declare EventEmitter
+  @Input hasPairingStarted: boolean;
 
   private ctx: CanvasRenderingContext2D;
   private drawing = false;
@@ -127,6 +129,13 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
     const withinMargin = this.segments - (pos.x % this.segments);
     if (withinMargin < 90 && withinMargin > 10) return;
 
+    if (
+      this.verticalMargin * 1.5 > pos.y ||
+      pos.y > this.canvas.nativeElement.height - this.verticalMargin * 1.5 ||
+      this.hasPairingStarted
+    )
+      return;
+
     this.drawing = true;
     this.startX = Math.round(pos.x / this.segments) * this.segments;
     this.startY = pos.y;
@@ -151,6 +160,18 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
     const endX = Math.round(pos.x / this.segments) * this.segments;
     if ((withinMargin < 90 && withinMargin > 10) || endX == this.startX)
       // point cannot be on the line itself
+      return this.ctx.putImageData(this.savedImageData, 0, 0);
+
+    if (pos.x - this.startX > this.segments * 1.05)
+      // point cannot pass a segment itself
+      return this.ctx.putImageData(this.savedImageData, 0, 0);
+
+    if (
+      this.verticalMargin * 1.5 > pos.y ||
+      pos.y > this.canvas.nativeElement.height - this.verticalMargin * 1.5 ||
+      this.verticalMargin * 1.5 > pos.x ||
+      pos.x > this.canvas.nativeElement.width - this.verticalMargin * 1.5
+    )
       return this.ctx.putImageData(this.savedImageData, 0, 0);
 
     const endY =
