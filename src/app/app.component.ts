@@ -8,9 +8,10 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { CanvasComponent } from './canvas/canvas.component';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LadderInputComponent } from './ladder-input/ladder-input.component';
+import { getBrightColor } from '../assets/canvas';
 
 @Component({
   selector: 'app-root',
@@ -50,13 +51,9 @@ import { LadderInputComponent } from './ladder-input/ladder-input.component';
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                      <g
-                        id="SVGRepo_tracerCarrier"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></g>
-                      <g id="SVGRepo_iconCarrier">
+                      <g stroke-width="0"></g>
+                      <g stroke-linecap="round" stroke-linejoin="round"></g>
+                      <g>
                         <path
                           d="M12 6V18M12 18L7 13M12 18L17 13"
                           stroke="#faf"
@@ -173,7 +170,7 @@ export class AppComponent implements AfterViewInit {
   };
 
   triggerChildStartDrawing(index: number): void {
-    this.brightColor = this.getBrightColor();
+    this.brightColor = getBrightColor();
     this.clickedButtons.add(index);
     if (this.childCanvasComponent) {
       this.childCanvasComponent.startDrawing(index, this.brightColor);
@@ -201,15 +198,5 @@ export class AppComponent implements AfterViewInit {
 
   onNumberReceived(index: number): void {
     this.reachedDecisions.add(index);
-  }
-
-  getBrightColor(): string {
-    let hue: number;
-    do {
-      hue = Math.floor(Math.random() * 360); // Random hue from 0-360°
-    } while (hue >= 270 && hue <= 330); // Exclude 270-330° (purple-pink)
-    const saturation = Math.floor(Math.random() * 21) + 80; // 80-100% saturation
-    const lightness = Math.floor(Math.random() * 21) + 60; // 60-80% lightness
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   }
 }

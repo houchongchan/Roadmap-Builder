@@ -9,6 +9,10 @@ import {
   EventEmitter,
   Output,
 } from '@angular/core';
+import {
+  defaultCanvasContext,
+  pathTraversalContext,
+} from '../../assets/canvas';
 
 @Component({
   selector: 'app-canvas',
@@ -31,7 +35,6 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
 
   private savedImageData!: ImageData; // Stores previous canvas state
   private constraints = [];
-  private animationIndex = 0;
   private progress = 0; // Controls smooth rendering of each segment
   private animationSpeed = 0.02; // Adjust speed (lower = slower)
   private animationStartPoint: { x: number; y: number };
@@ -44,19 +47,7 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
     this.resizeCanvas();
     this.segments = this.canvas.nativeElement.width / (this.lines + 1);
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.ctx.clearRect(
-      0,
-      0,
-      this.canvas.nativeElement.width,
-      this.canvas.nativeElement.height
-    );
-    // Now you can use this.ctx to draw on the canvas
-    this.ctx.lineWidth = 5; // Default line width
-    this.ctx.shadowBlur = 3;
-    this.ctx.shadowColor = 'blue';
-    this.ctx.strokeStyle = '#18a999'; // Default stroke color
-    this.ctx.lineCap = 'round';
-    this.ctx.lineJoin = 'round';
+    defaultCanvasContext(this.ctx, this.canvas);
 
     for (let i = 0; i < this.lines; i++) {
       this.drawLine(
@@ -105,19 +96,7 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
   respaceLineSegments() {
     this.segments = this.canvas.nativeElement.width / (this.lines + 1);
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.ctx.clearRect(
-      0,
-      0,
-      this.canvas.nativeElement.width,
-      this.canvas.nativeElement.height
-    );
-    // Now you can use this.ctx to draw on the canvas
-    this.ctx.lineWidth = 5; // Default line width
-    this.ctx.shadowBlur = 3;
-    this.ctx.shadowColor = 'blue';
-    this.ctx.strokeStyle = '#18a999'; // Default stroke color
-    this.ctx.lineCap = 'round';
-    this.ctx.lineJoin = 'round';
+    defaultCanvasContext(this.ctx, this.canvas);
 
     for (let i = 0; i < this.lines; i++) {
       this.drawLine(
@@ -230,7 +209,6 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
   }
 
   public startDrawing(index, brightColor) {
-    this.animationIndex = 0;
     const lineX = this.segments * (index + 1);
     this.animationStartPoint = { x: lineX, y: this.verticalMargin };
     this.animationEndPoint = this.findNextPoint({
@@ -238,10 +216,7 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
       y: this.verticalMargin,
     });
 
-    this.ctx.strokeStyle = brightColor;
-    this.ctx.shadowBlur = 1;
-    this.ctx.shadowColor = 'black';
-    this.ctx.lineWidth = 5; // Default line width
+    pathTraversalContext(this.ctx, brightColor);
     this.animatePath();
   }
 
@@ -266,7 +241,6 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
     if (this.progress >= 1) {
       // Move to the next segment when progress is complete
       this.progress = 0;
-      this.animationIndex++;
       this.animationStartPoint = this.animationEndPoint;
       this.animationEndPoint = this.findNextPoint(this.animationStartPoint);
       // first, find all the constraints on that line, and traverse through that constraint when it's reached.
@@ -327,7 +301,6 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
             ? filteredConstraints[0].start.y
             : filteredConstraints[0].end.y,
       };
-      // return filteredConstraints[0].
     } else {
       return {
         x: startPos.x,

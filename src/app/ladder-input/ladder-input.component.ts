@@ -13,23 +13,25 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-ladder-input',
   imports: [CommonModule, FormsModule],
   template: `
-    <input
-      class="text-input"
-      type="text"
-      (input)="onDescriptionChange($event, index, row)"
-      [disabled]="isButtonDisabled"
-      [ngClass]="{ 'rendered-decision': isButtonDisabled }"
-      [ngStyle]="{
-        'background-color': inputColor,
-        'box-shadow': 'inset 0 0 0 0.125rem ' + inputColor
-      }"
-      [(ngModel)]="inputValue"
-    />
+    <div class="container">
+      <div class="input-label">{{ index + 1 }}</div>
+      <input
+        class="text-input"
+        type="text"
+        (input)="onDescriptionChange($event, index, row)"
+        [disabled]="isButtonDisabled"
+        [ngStyle]="{
+          'background-color': inputColor,
+          'box-shadow': 'inset 0 0 0 0.125rem ' + inputColor
+        }"
+        placeholder="Selection"
+        [(ngModel)]="inputValue"
+      />
+    </div>
   `,
-  styleUrls: ['./ladder-input.component.scss'], // Corrected to styleUrls
+  styleUrls: ['./ladder-input.component.scss'],
 })
 export class LadderInputComponent implements AfterViewInit {
-  // Explicit typing for all inputs
   @Input() onDescriptionChange: (
     event: Event,
     index: number,
@@ -40,11 +42,10 @@ export class LadderInputComponent implements AfterViewInit {
   @Input() row: string = '';
   @Input() isButtonDisabled: boolean = false;
 
-  // Input value with a string type
   @Input() inputValue: string = '';
   @Output() inputValueChange = new EventEmitter<string>();
   @Input() brightColor: string;
-  inputColor;
+  inputColor: string;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isButtonDisabled']) {
@@ -64,5 +65,12 @@ export class LadderInputComponent implements AfterViewInit {
   reset(): void {
     this.inputValue = ''; // Reset input value
     this.inputValueChange.emit(this.inputValue); // Emit the updated value
+  }
+
+  getInputText(row) {
+    if (row == 'top') {
+      return 'Selcti';
+    }
+    return 'Selection';
   }
 }
