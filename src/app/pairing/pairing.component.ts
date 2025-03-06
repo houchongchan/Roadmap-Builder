@@ -43,5 +43,4 @@ export class PairingComponent {
     endText: string;
     color: string;
   };
-  renderInPlace: boolean = false;
 }

@@ -55,6 +55,8 @@ export function mouseDownChecker(
     hasPairingStarted
   )
     return false;
+
+  return true;
 }
 
 export function mouseUpChecker(
@@ -67,11 +69,12 @@ export function mouseUpChecker(
 ) {
   const withinMargin = segments - (pos.x % segments);
   const endX = Math.round(pos.x / segments) * segments;
+
   if ((withinMargin < 90 && withinMargin > 10) || endX == startX)
     // point cannot be on the line itself
     return false;
 
-  if (Math.abs(pos.x - this.startX) > this.segments * 1.05)
+  if (Math.abs(pos.x - startX) > segments * 1.05)
     // point cannot pass a segment itself
     return false;
 
@@ -82,4 +85,6 @@ export function mouseUpChecker(
     pos.x > canvasWidth - verticalMargin * 1.5
   )
     return false;
+
+  return true;
 }

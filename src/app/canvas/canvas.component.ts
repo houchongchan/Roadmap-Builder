@@ -39,7 +39,7 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
 
   private ctx: CanvasRenderingContext2D;
   private drawing = false;
-  point_size: number = 10;
+  private point_size: number = 10;
   private startX: number = 0;
   private startY: number = 0;
 
@@ -51,7 +51,7 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
   private animationEndPoint: { x: number; y: number };
   private visitedConstraints = new Set();
   private verticalMargin: number = 20;
-  segments: number;
+  private segments: number;
 
   ngAfterViewInit(): void {
     this.resizeCanvas();
@@ -171,7 +171,7 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
     this.drawing = false;
     const pos = this.getMousePos(event);
     if (
-      mouseUpChecker(
+      !mouseUpChecker(
         pos,
         this.segments,
         this.verticalMargin,
