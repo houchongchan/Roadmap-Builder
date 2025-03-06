@@ -27,7 +27,7 @@ import { LadderInputComponent } from './ladder-input/ladder-input.component';
       <div class="content" *ngIf="topRowDescriptions.length > 0">
         <header class="fade-content">
           <a href="https://github.com/houchongchan"
-            >Japanese Ladder: Decision Making Minigame</a
+            >Ghost Leg: Selection Randomizer</a
           >
         </header>
         <div class="container-body">
