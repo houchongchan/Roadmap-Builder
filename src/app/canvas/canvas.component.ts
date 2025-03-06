@@ -48,7 +48,9 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
   ngAfterViewInit(): void {
     this.resizeCanvas();
     this.segments = this.canvas.nativeElement.width / (this.lines + 1);
-    this.ctx = this.canvas.nativeElement.getContext('2d');
+    this.ctx = this.canvas.nativeElement.getContext('2d', {
+      willReadFrequently: true,
+    });
     defaultCanvasContext(this.ctx, this.canvas);
 
     for (let i = 0; i < this.lines; i++) {
@@ -97,7 +99,9 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
 
   respaceLineSegments() {
     this.segments = this.canvas.nativeElement.width / (this.lines + 1);
-    this.ctx = this.canvas.nativeElement.getContext('2d');
+    this.ctx = this.canvas.nativeElement.getContext('2d', {
+      willReadFrequently: true,
+    });
     defaultCanvasContext(this.ctx, this.canvas);
 
     for (let i = 0; i < this.lines; i++) {
@@ -162,7 +166,7 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
       // point cannot be on the line itself
       return this.ctx.putImageData(this.savedImageData, 0, 0);
 
-    if (pos.x - this.startX > this.segments * 1.05)
+    if (Math.abs(pos.x - this.startX) > this.segments * 1.05)
       // point cannot pass a segment itself
       return this.ctx.putImageData(this.savedImageData, 0, 0);
 
