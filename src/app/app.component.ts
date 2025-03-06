@@ -159,6 +159,7 @@ export class AppComponent implements AfterViewInit {
 
   onInputChange = (event: Event): void => {
     const target = event.target as HTMLInputElement;
+    this.reset();
     this.lineCount = Number(target.value);
   };
 
