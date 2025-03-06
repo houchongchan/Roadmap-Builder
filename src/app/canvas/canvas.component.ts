@@ -11,13 +11,21 @@ import {
 } from '@angular/core';
 import {
   defaultCanvasContext,
+  mouseDownChecker,
+  mouseUpChecker,
   pathTraversalContext,
 } from '../../assets/canvas';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-canvas',
-  imports: [],
-  template: '<canvas #myCanvas>',
+  imports: [CommonModule],
+  template: `<canvas
+    #myCanvas
+    [ngStyle]="{
+          'cursor': hasPairingStarted?'not-allowed': 'default',
+        }"
+  ></canvas>`,
   styleUrl: './canvas.component.scss',
 })
 export class CanvasComponent implements AfterViewInit, OnChanges {
@@ -31,19 +39,19 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
 
   private ctx: CanvasRenderingContext2D;
   private drawing = false;
-  point_size = 10;
-  private startX = 0;
-  private startY = 0;
+  point_size: number = 10;
+  private startX: number = 0;
+  private startY: number = 0;
 
   private savedImageData!: ImageData; // Stores previous canvas state
   private constraints = [];
-  private progress = 0; // Controls smooth rendering of each segment
+  private progress: number = 0; // Controls smooth rendering of each segment
   private animationSpeed = 0.02; // Adjust speed (lower = slower)
   private animationStartPoint: { x: number; y: number };
   private animationEndPoint: { x: number; y: number };
   private visitedConstraints = new Set();
   private verticalMargin: number = 20;
-  segments;
+  segments: number;
 
   ngAfterViewInit(): void {
     this.resizeCanvas();
@@ -130,13 +138,15 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
   onMouseDown(event: MouseEvent) {
     const pos = this.getMousePos(event);
     // calculate if the point is within margin
-    const withinMargin = this.segments - (pos.x % this.segments);
-    if (withinMargin < 90 && withinMargin > 10) return;
 
     if (
-      this.verticalMargin * 1.5 > pos.y ||
-      pos.y > this.canvas.nativeElement.height - this.verticalMargin * 1.5 ||
-      this.hasPairingStarted
+      !mouseDownChecker(
+        pos,
+        this.segments,
+        this.verticalMargin,
+        this.canvas.nativeElement.height,
+        this.hasPairingStarted
+      )
     )
       return;
 
@@ -160,24 +170,19 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
     if (!this.drawing || !this.ctx) return;
     this.drawing = false;
     const pos = this.getMousePos(event);
-    const withinMargin = this.segments - (pos.x % this.segments);
-    const endX = Math.round(pos.x / this.segments) * this.segments;
-    if ((withinMargin < 90 && withinMargin > 10) || endX == this.startX)
-      // point cannot be on the line itself
-      return this.ctx.putImageData(this.savedImageData, 0, 0);
-
-    if (Math.abs(pos.x - this.startX) > this.segments * 1.05)
-      // point cannot pass a segment itself
-      return this.ctx.putImageData(this.savedImageData, 0, 0);
-
     if (
-      this.verticalMargin * 1.5 > pos.y ||
-      pos.y > this.canvas.nativeElement.height - this.verticalMargin * 1.5 ||
-      this.verticalMargin * 1.5 > pos.x ||
-      pos.x > this.canvas.nativeElement.width - this.verticalMargin * 1.5
+      mouseUpChecker(
+        pos,
+        this.segments,
+        this.verticalMargin,
+        this.canvas.nativeElement.height,
+        this.canvas.nativeElement.width,
+        this.startX
+      )
     )
       return this.ctx.putImageData(this.savedImageData, 0, 0);
 
+    const endX = Math.round(pos.x / this.segments) * this.segments;
     const endY =
       pos.y + ((pos.y - this.startY) / (pos.x - this.startX)) * (endX - pos.x);
     this.ctx.putImageData(this.savedImageData, 0, 0);

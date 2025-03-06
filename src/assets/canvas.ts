@@ -38,3 +38,48 @@ export function getBrightColor() {
   const lightness = Math.floor(Math.random() * 21) + 60; // 60-80% lightness
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
+
+export function mouseDownChecker(
+  pos,
+  segments,
+  verticalMargin,
+  canvasHeight,
+  hasPairingStarted
+) {
+  const withinMargin = segments - (pos.x % segments);
+  if (withinMargin < 90 && withinMargin > 10) return false;
+
+  if (
+    verticalMargin * 1.5 > pos.y ||
+    pos.y > canvasHeight - verticalMargin * 1.5 ||
+    hasPairingStarted
+  )
+    return false;
+}
+
+export function mouseUpChecker(
+  pos,
+  segments,
+  verticalMargin,
+  canvasHeight,
+  canvasWidth,
+  startX
+) {
+  const withinMargin = segments - (pos.x % segments);
+  const endX = Math.round(pos.x / segments) * segments;
+  if ((withinMargin < 90 && withinMargin > 10) || endX == startX)
+    // point cannot be on the line itself
+    return false;
+
+  if (Math.abs(pos.x - this.startX) > this.segments * 1.05)
+    // point cannot pass a segment itself
+    return false;
+
+  if (
+    verticalMargin * 1.5 > pos.y ||
+    pos.y > canvasHeight - verticalMargin * 1.5 ||
+    verticalMargin * 1.5 > pos.x ||
+    pos.x > canvasWidth - verticalMargin * 1.5
+  )
+    return false;
+}

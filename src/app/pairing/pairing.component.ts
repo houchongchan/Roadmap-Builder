@@ -36,6 +36,12 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./pairing.component.scss', '../../styles.scss'],
 })
 export class PairingComponent {
-  @Input pairing;
+  @Input pairing: {
+    start: number;
+    end: number;
+    startText: string;
+    endText: string;
+    color: string;
+  };
   renderInPlace: boolean = false;
 }
