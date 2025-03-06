@@ -2,6 +2,7 @@ import { RouterOutlet } from '@angular/router';
 import {
   AfterViewInit,
   Component,
+  HostListener,
   QueryList,
   ViewChild,
   ViewChildren,
@@ -144,14 +145,16 @@ export class AppComponent implements AfterViewInit {
   }
 
   constructor() {
-    this.autofillTopRowDescriptions();
-  }
-
-  autofillTopRowDescriptions(): void {
+    //autofill Top Row Descriptions;
     for (let i = 0; i < this.lineCount; i++) {
       this.topRowDescriptions[i] = '';
       this.bottomRowDescriptions[i] = '';
     }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.reset();
   }
 
   onInputChange = (event: Event): void => {
@@ -187,7 +190,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   reset(): void {
-    console.log('reset');
     this.clickedButtons.clear();
     this.reachedDecisions.clear();
     this.childInputs.forEach((child) => child.reset()); // Call reset on each child component
@@ -201,7 +203,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   getBrightColor(): string {
-    let hue;
+    let hue: number;
     do {
       hue = Math.floor(Math.random() * 360); // Random hue from 0-360°
     } while (hue >= 270 && hue <= 330); // Exclude 270-330° (purple-pink)

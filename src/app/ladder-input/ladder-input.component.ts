@@ -52,7 +52,6 @@ export class LadderInputComponent implements AfterViewInit {
         this.inputColor = '#fff';
         return;
       }
-      console.log(this.inputColor, this.brightColor);
       this.inputColor = this.brightColor;
     }
   }

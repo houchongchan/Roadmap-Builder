@@ -6,7 +6,6 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
-  HostListener,
   EventEmitter,
   Output,
 } from '@angular/core';
@@ -84,11 +83,6 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
     canvasEl.addEventListener('mousemove', this.onMouseMove.bind(this));
     canvasEl.addEventListener('mouseup', this.onMouseUp.bind(this));
     canvasEl.addEventListener('mouseleave', this.onMouseLeave.bind(this));
-  }
-
-  @HostListener('window:resize')
-  onResize(): void {
-    this.resizeCanvas();
   }
 
   public resizeCanvas(): void {
@@ -299,15 +293,17 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
     const filteredConstraints = this.constraints
       .filter(
         (e) =>
-          (e.start.x == startPos.x || e.end.x == startPos.x) &&
+          ((e.start.x == startPos.x && e.start.y >= startPos.y) ||
+            (e.end.x == startPos.x && e.end.y >= startPos.y)) &&
           !this.visitedConstraints.has(e) &&
           (e.start.y >= startPos.y || e.end.y >= startPos.y)
       )
       .sort(
         (a, b) =>
-          (a.start.y < a.end.y ? a.start.y : a.end.y) -
-          (b.start.y < b.end.y ? b.start.y : b.end.y)
+          (a.start.x == startPos.x ? a.start.y : a.end.y) -
+          (b.start.x == startPos.x ? b.start.y : b.end.y)
       );
+
     if (filteredConstraints.length > 0) {
       if (
         startPos.x == filteredConstraints[0].start.x &&
@@ -323,6 +319,8 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
         this.visitedConstraints.add(filteredConstraints[0]);
         return filteredConstraints[0].start;
       }
+
+      console.log('dfsfs');
 
       return {
         x: startPos.x,
