@@ -320,8 +320,6 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
         return filteredConstraints[0].start;
       }
 
-      console.log('dfsfs');
-
       return {
         x: startPos.x,
         y:
